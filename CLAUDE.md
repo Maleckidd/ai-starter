@@ -58,15 +58,17 @@ flowchart LR
     P[planner] --> T[tester]
     T --> C[coder]
     C --> Q{Tests passing?}
-    Q -- no --> T
+    Q -- no --> C
     Q -- yes --> R[reviewer]
     R -- OK --> N[Next task]
     R -- incomplete --> C
 ```
 
 - **planner** — read-only plan; lists the testable logic that drives the task loop.
-- **tester** — failing logic tests (TDD red). Re-invoked on the `no` edge.
-- **coder** — implements until tests are green. Re-invoked on the `incomplete` edge.
+- **tester** — writes the failing logic tests once (TDD red). Re-invoked **only** if a test
+  encodes the wrong expectation — making red tests green is the coder's job, not the tester's.
+- **coder** — implements until tests are green; owns the `no` loop. Re-invoked on the
+  `incomplete` edge.
 - **reviewer** — read-only gate: runs the test + type-check commands; verdict APPROVED
   (`OK` → next task) / CHANGES REQUIRED (`incomplete` → back to coder).
 

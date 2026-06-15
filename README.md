@@ -31,7 +31,7 @@ Three ideas do the heavy lifting:
 
 1. **The orchestrated pipeline** — an orchestrator (the main session, via `/feature`)
    executes the plan step by step and delegates: planner → tester → coder → reviewer, with
-   a gate loop (failing tests → tester; reviewer *incomplete* → coder). Small, ordered,
+   a gate loop (failing tests → coder; reviewer *incomplete* → coder). Small, ordered,
    each with one job; plans and reviews are read-only.
 2. **The single data-access layer** — all data goes through one layer, declared in
    `CLAUDE.md`. This is what keeps the backend swappable (local-first ↔ hosted).
@@ -83,7 +83,7 @@ to match `CLAUDE.md` → Stack. Verify `npm run dev` and the test command work, 
 For each non-trivial feature, run `/feature <description>`. The **orchestrator** (the main
 session) executes a plan step by step and delegates to the agents with a gate loop:
 
-> **planner** → **tester** → **coder** → *(Tests passing? no → tester)* → **reviewer** → *(incomplete → coder)* → next task
+> **planner** → **tester** → **coder** → *(Tests passing? no → coder)* → **reviewer** → *(incomplete → coder)* → next task
 
 Plan first (read-only), write failing logic-only tests, implement until green, then gate
 with the reviewer (it runs the test + type-check commands and checks against the plan,

@@ -19,8 +19,9 @@ $ARGUMENTS
       if the planner marked the task as having no testable logic.)
    2. **coder** — implement until the tests are green.
    3. **Gate — Tests passing?**
-      - **no** → go back to the **tester** (the tests or their expectations need revising),
-        then the **coder** again. Repeat until green.
+      - **no** → back to the **coder** — keep implementing until the tests are green (this
+        is the coder's loop). Only bounce to the **tester** if a test itself encodes the
+        wrong expectation.
       - **yes** → continue to review.
    4. **reviewer** — read-only gate; runs the test + type-check commands and checks the
       task against the plan, the domain rules, and `SPEC.md` → Out of scope.

@@ -35,8 +35,9 @@ Read `SPEC.md` for the requirement you're implementing.
   (a migration, a tricky mapping, an intentional TODO).
 
 ## In the pipeline
-The orchestrator invokes you **after the Tester**, and again on the Reviewer's `incomplete`
-edge (CHANGES REQUIRED — see `CLAUDE.md` → *Subagent pipeline & orchestration*). Make the
-tests green; the orchestrator then runs the *Tests passing?* gate and, on `yes`, hands off
-to the **reviewer**. When the Reviewer returns CHANGES REQUIRED, address each point and
-report back for re-review.
+The orchestrator invokes you **after the Tester**. Make the tests green — the *Tests
+passing?* gate loops back to **you** (the `no` edge) until they are; that loop is yours, not
+the Tester's. On `yes` the orchestrator hands off to the **reviewer**. You're re-invoked on
+the Reviewer's `incomplete` edge (CHANGES REQUIRED) — address each point and report back for
+re-review. If a failing test genuinely encodes the wrong expectation, flag it for the
+Tester rather than coding around it. See `CLAUDE.md` → *Subagent pipeline & orchestration*.

@@ -41,7 +41,8 @@ the existing code style.
 - A short note to the Coder on what each test expects.
 
 ## In the pipeline
-The orchestrator invokes you **after the Planner**, and again whenever the *Tests passing?*
-gate fails (the `no` edge — see `CLAUDE.md` → *Subagent pipeline & orchestration*). On a
-re-invocation, revisit the failing tests: fix any that encode the wrong expectation, then
-hand back to the **coder**. Hand off to the Coder when the tests are correct and red.
+The orchestrator invokes you **once, after the Planner**, to write the failing tests (TDD
+red), then hands off to the **coder**. Making red tests green is the coder's loop — you are
+**not** re-invoked on every failing run. You're called again **only** when a test turns out
+to encode the wrong expectation; fix that test and hand back to the coder. See
+`CLAUDE.md` → *Subagent pipeline & orchestration*.
