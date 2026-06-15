@@ -104,6 +104,19 @@ This relies on the `Agent`/`Task` tool accepting a per-invocation `model` overri
 setup doesn't support that, fall back to per-tier agent variants (e.g. `coder-light` on
 sonnet, `coder-heavy` on opus) and route by choosing which to invoke.
 
+### Guardrails (hooks & MCP)
+
+Two mechanical aids back the pipeline up — both lean, both reinforcing the methodology:
+
+- **Stop hook** — `.claude/hooks/verify.sh` (wired in `.claude/settings.json`) runs the
+  project's type-check + tests when the agent finishes a turn and **blocks on failure**, so
+  you never end with red tests or broken types — including for changes made *outside*
+  `/feature`. **Fill its two commands at bootstrap** to mirror **Commands** above; it's a
+  no-op until then. Disable by emptying the vars or removing the Stop hook.
+- **context7 MCP** — `.mcp.json` adds Upstash's context7 server, which fetches **up-to-date
+  library docs on demand**, cutting stale-API hallucinations during coding. Works keyless;
+  a free API key (context7.com) raises rate limits.
+
 ## Architecture
 
 **Data flow — `<describe the state strategy, e.g. deliberately no global store: each

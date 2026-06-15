@@ -48,7 +48,9 @@ Steps:
    remainder cent-by-cent.*
 3. Fill `SPEC.md` §1 goal, §2 stack, §5.1 the split feature, §7 Out-of-scope (no accounts,
    one currency only, no tax/tip in v1).
-4. Verify `npm run dev` serves and `npm test` runs (fine with zero tests). Commit.
+4. Fill `.claude/hooks/verify.sh`: `TYPECHECK="npx tsc --noEmit"` and `TEST="npm test"`
+   (this also tests the Stop-hook guardrail).
+5. Verify `npm run dev` serves and `npm test` runs (fine with zero tests). Commit.
 
 ### Phase 2 — Run the pipeline
 Keep the dev server running (you own it, so the reviewer can drive it), then run:

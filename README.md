@@ -19,8 +19,10 @@ pick the stack when you start a project; the AI layer stays the same.
   reviewer.md           → read-only gate: tests + type-check + browser smoke → verdict
 .claude/commands/
   feature.md            → /feature — the orchestrator: runs the pipeline with the gate loop
-.claude/settings.json   Shared permission allowlist (npm / tsc / git / Playwright)
-.mcp.json               Playwright MCP — for browser-driven smoke tests
+.claude/hooks/
+  verify.sh             → Stop hook: type-check + tests gate when a turn ends (fill at bootstrap)
+.claude/settings.json   Shared permission allowlist + the Stop hook wiring
+.mcp.json               Playwright (browser smoke) + context7 (live library docs)
 CLAUDE.md               Project guidance + the Stack/Commands the agents read. Has slots.
 SPEC.md                 Living spec (SDD). Numbered structure incl. Out-of-scope + Limits.
 TESTING.md              Layered verification + manual test plan template.
@@ -77,7 +79,9 @@ Vitest, local-first by default**. Adjust per idea.
 ### 3. Scaffold the chosen stack
 This starter ships no app code by design (it's already the first TODO in `SPEC.md` §8).
 Scaffold the framework, the single data-access layer, the UI kit, and the test runner
-to match `CLAUDE.md` → Stack. Verify `npm run dev` and the test command work, then commit.
+to match `CLAUDE.md` → Stack. Then fill `.claude/hooks/verify.sh` with your type-check +
+test commands so the Stop hook can gate them. Verify `npm run dev` and the test command
+work, then commit.
 
 ### 4. Build features with the pipeline
 For a feature with **real logic or risk**, run `/feature <description>`. The **orchestrator**

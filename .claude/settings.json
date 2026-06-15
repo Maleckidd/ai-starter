@@ -18,5 +18,10 @@
       "mcp__playwright__browser_take_screenshot",
       "mcp__playwright__browser_console_messages"
     ]
+  },
+  "hooks": {
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "sh .claude/hooks/verify.sh" }] }
+    ]
   }
 }
