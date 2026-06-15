@@ -93,7 +93,8 @@ the domain rules, and Out-of-scope). Verify UI/native behavior by running the ap
 ## Conventions worth keeping
 
 - **Logic-only unit tests.** Test pure logic (the data layer, utils). Don't write brittle
-  UI/component tests — verify rendering and native behavior by running the app.
+  UI/component tests — UI is verified by **browser smoke** (the reviewer drives the affected
+  flow with the Playwright MCP), and native-only behavior by running the app per `TESTING.md`.
 - **Don't scatter data access.** Everything goes through the one data layer.
 - **Update the spec.** `SPEC.md` is alive — change it on every significant decision.
 - **Respect Out-of-scope.** It's the cheapest way to keep an AI from over-building.

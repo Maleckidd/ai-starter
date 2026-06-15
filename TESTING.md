@@ -20,6 +20,11 @@ exactly one layer — push every check as far down (cheaper, more automated) as 
 | Browser smoke | Playwright MCP on the dev server | Browser-driven flows: form → save → list, navigation, rendering |
 | **Manual (this plan)** | `<device / native build>` | Native modules, OS dialogs, gestures, permissions, file system, share sheet, app lifecycle |
 
+**The browser-smoke layer runs inside the pipeline:** the **reviewer** drives the affected
+flow with the Playwright MCP as part of the feature gate (see `.claude/agents/reviewer.md`
+check 7). This document's **manual** layer therefore covers only what the browser cannot
+reach.
+
 **Why a manual layer exists:** `<list the gaps the automated layers can't reach for this
 stack — e.g. native APIs have no web implementation, OS permission dialogs, real device
 persistence>`. Every case below exercises at least one of those gaps.

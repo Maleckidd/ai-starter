@@ -69,8 +69,9 @@ flowchart LR
   encodes the wrong expectation — making red tests green is the coder's job, not the tester's.
 - **coder** — implements until tests are green; owns the `no` loop. Re-invoked on the
   `incomplete` edge.
-- **reviewer** — read-only gate: runs the test + type-check commands; verdict APPROVED
-  (`OK` → next task) / CHANGES REQUIRED (`incomplete` → back to coder).
+- **reviewer** — read-only gate: runs the test + type-check commands, plus a Playwright-MCP
+  **browser smoke** of the affected flow when the change is browser-observable; verdict
+  APPROVED (`OK` → next task) / CHANGES REQUIRED (`incomplete` → back to coder).
 
 Drive it with `/feature <description>`, or run the same loop by hand in the main session.
 If a task has no testable pure logic, the orchestrator skips the tester for that task

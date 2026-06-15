@@ -23,8 +23,10 @@ $ARGUMENTS
         is the coder's loop). Only bounce to the **tester** if a test itself encodes the
         wrong expectation.
       - **yes** → continue to review.
-   4. **reviewer** — read-only gate; runs the test + type-check commands and checks the
-      task against the plan, the domain rules, and `SPEC.md` → Out of scope.
+   4. **reviewer** — read-only gate; runs the test + type-check commands, smokes the
+      affected flow with the Playwright MCP when the change is browser-observable, and
+      checks the task against the plan, the domain rules, and `SPEC.md` → Out of scope.
+      (Keep the dev server running so the reviewer can drive it.)
       - **incomplete** (CHANGES REQUIRED) → go back to the **coder** with the reviewer's
         specifics, then re-run the gate. Repeat.
       - **OK** (APPROVED) → this task is done; move to the **next task**.
