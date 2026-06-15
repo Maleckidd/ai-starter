@@ -90,4 +90,3 @@ interaction patterns. Never hardcode style values when a token exists.>`
 ## 9. Known limitations and risks
 
 `<Honest list of current gaps, accepted trade-offs, and risks — the counterpart to §7.>`
-</content>

@@ -17,6 +17,8 @@ you start a project; the AI layer stays the same.
   tester.md             → TDD red: writes failing logic-only tests
   coder.md              → implements until tests are green
   reviewer.md           → read-only gate: APPROVED / CHANGES REQUIRED
+.claude/commands/
+  feature.md            → /feature — the orchestrator: runs the pipeline with the gate loop
 .claude/settings.local.json   Minimal permission allowlist (npm / tsc / git / Playwright)
 .mcp.json               Playwright MCP — for browser-driven smoke tests
 CLAUDE.md               Project guidance + the Stack/Commands the agents read. Has slots.
@@ -27,8 +29,10 @@ TESTING.md              Layered verification + manual test plan template.
 
 Three ideas do the heavy lifting:
 
-1. **The pipeline** — planner → tester → coder → reviewer. Small, ordered, each with one
-   job. Plans are read-only, tests come before code, and a read-only reviewer gates merge.
+1. **The orchestrated pipeline** — an orchestrator (the main session, via `/feature`)
+   executes the plan step by step and delegates: planner → tester → coder → reviewer, with
+   a gate loop (failing tests → tester; reviewer *incomplete* → coder). Small, ordered,
+   each with one job; plans and reviews are read-only.
 2. **The single data-access layer** — all data goes through one layer, declared in
    `CLAUDE.md`. This is what keeps the backend swappable (local-first ↔ hosted).
 3. **Spec-driven, with an explicit Out-of-scope** — `SPEC.md` §7 lists what the product
@@ -76,14 +80,15 @@ Scaffold the framework, the single data-access layer, the UI kit, and the test r
 to match `CLAUDE.md` → Stack. Verify `npm run dev` and the test command work, then commit.
 
 ### 4. Build features with the pipeline
-For each non-trivial feature, run the agents in order:
+For each non-trivial feature, run `/feature <description>`. The **orchestrator** (the main
+session) executes a plan step by step and delegates to the agents with a gate loop:
 
-> **planner** → **tester** → **coder** → **reviewer**
+> **planner** → **tester** → **coder** → *(Tests passing? no → tester)* → **reviewer** → *(incomplete → coder)* → next task
 
 Plan first (read-only), write failing logic-only tests, implement until green, then gate
 with the reviewer (it runs the test + type-check commands and checks against the plan,
 the domain rules, and Out-of-scope). Verify UI/native behavior by running the app per
-`TESTING.md`.
+`TESTING.md`. You can also drive the same loop by hand instead of `/feature`.
 
 ## Conventions worth keeping
 
@@ -92,4 +97,3 @@ the domain rules, and Out-of-scope). Verify UI/native behavior by running the ap
 - **Don't scatter data access.** Everything goes through the one data layer.
 - **Update the spec.** `SPEC.md` is alive — change it on every significant decision.
 - **Respect Out-of-scope.** It's the cheapest way to keep an AI from over-building.
-</content>

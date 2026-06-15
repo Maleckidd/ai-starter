@@ -46,12 +46,33 @@ There is no lint script unless added. Unit tests cover **pure logic only** (the
 data-access layer and pure utils); UI/native behavior is verified by running the app
 (see [TESTING.md](TESTING.md)), not by component tests.
 
-## Subagent pipeline
+## Subagent pipeline & orchestration
 
-Feature work uses four agents in `.claude/agents/`, in order:
-**planner** (read-only plan) → **tester** (failing logic tests, TDD red) → **coder**
-(implements until green) → **reviewer** (read-only gate: plan completeness, runs the
-test + type-check commands; verdict APPROVED / CHANGES REQUIRED).
+Feature work uses four agents in `.claude/agents/` plus an **orchestrator** — the main
+Claude session, invoked via the `/feature <description>` command. The orchestrator is
+**read-only with respect to code**: it executes the plan step by step and, for each task,
+delegates work in the following order, looping on each gate:
+
+```mermaid
+flowchart LR
+    P[planner] --> T[tester]
+    T --> C[coder]
+    C --> Q{Tests passing?}
+    Q -- no --> T
+    Q -- yes --> R[reviewer]
+    R -- OK --> N[Next task]
+    R -- incomplete --> C
+```
+
+- **planner** — read-only plan; lists the testable logic that drives the task loop.
+- **tester** — failing logic tests (TDD red). Re-invoked on the `no` edge.
+- **coder** — implements until tests are green. Re-invoked on the `incomplete` edge.
+- **reviewer** — read-only gate: runs the test + type-check commands; verdict APPROVED
+  (`OK` → next task) / CHANGES REQUIRED (`incomplete` → back to coder).
+
+Drive it with `/feature <description>`, or run the same loop by hand in the main session.
+If a task has no testable pure logic, the orchestrator skips the tester for that task
+(the planner flags this).
 
 ## Architecture
 
@@ -86,4 +107,3 @@ the migration>`.
 - `<e.g. Search must handle non-ASCII input — filter in JS, not SQL LIKE.>`
 - Out-of-scope features are listed in `SPEC.md` → **Out of scope** — don't add them
   speculatively.
-</content>

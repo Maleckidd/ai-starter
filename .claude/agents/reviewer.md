@@ -33,5 +33,9 @@ End every review with one of:
 
 Be specific and terse. UI/behavioral cases that can't be unit-tested should be flagged as
 "verify by running the app" (see `TESTING.md`) rather than assumed broken.
-</content>
-</invoke>
+
+## In the pipeline
+You are the **final gate** of each task (`CLAUDE.md` → *Subagent pipeline & orchestration*).
+Your verdict routes the loop: **APPROVED** is the `OK` edge → the orchestrator moves to the
+**next task**; **CHANGES REQUIRED** is the `incomplete` edge → straight back to the
+**coder** with your concrete list.

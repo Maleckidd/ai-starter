@@ -39,5 +39,9 @@ the existing code style.
 - Run the test command and report the failures — confirm they fail for the *right*
   reason (missing implementation), not setup errors.
 - A short note to the Coder on what each test expects.
-</content>
-</invoke>
+
+## In the pipeline
+The orchestrator invokes you **after the Planner**, and again whenever the *Tests passing?*
+gate fails (the `no` edge — see `CLAUDE.md` → *Subagent pipeline & orchestration*). On a
+re-invocation, revisit the failing tests: fix any that encode the wrong expectation, then
+hand back to the **coder**. Hand off to the Coder when the tests are correct and red.

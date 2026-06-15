@@ -33,5 +33,10 @@ Read `SPEC.md` for the requirement you're implementing.
 - Test command results (passing) and a clean type-check.
 - A short per-file summary of what changed, plus anything the Reviewer should scrutinize
   (a migration, a tricky mapping, an intentional TODO).
-</content>
-</invoke>
+
+## In the pipeline
+The orchestrator invokes you **after the Tester**, and again on the Reviewer's `incomplete`
+edge (CHANGES REQUIRED — see `CLAUDE.md` → *Subagent pipeline & orchestration*). Make the
+tests green; the orchestrator then runs the *Tests passing?* gate and, on `yes`, hands off
+to the **reviewer**. When the Reviewer returns CHANGES REQUIRED, address each point and
+report back for re-review.

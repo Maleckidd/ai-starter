@@ -78,4 +78,3 @@ The P0 set, in execution order:
 - 100% of P0 passed on the primary platform.
 - No open defects in `<data-loss / critical class>`.
 - P1 failures triaged: fixed, or explicitly accepted and recorded in `SPEC.md` §9.
-</content>

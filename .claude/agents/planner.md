@@ -35,5 +35,9 @@ Before planning, read:
 - **Risks / open questions** — migrations, mocking, anything ambiguous or out-of-scope.
 
 Keep it tight and actionable. The orchestrator hands this plan to the Tester and Coder.
-</content>
-</invoke>
+
+## In the pipeline
+You run **first**. Your plan drives the orchestrator's per-task loop
+(`CLAUDE.md` → *Subagent pipeline & orchestration*): for each step, **tester** → **coder**
+→ *Tests passing?* → **reviewer**. Mark any step that has **no testable pure logic** so the
+orchestrator can skip the Tester for it.
