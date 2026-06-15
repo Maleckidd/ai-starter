@@ -1,0 +1,34 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+*.tsbuildinfo
+
+# native (Capacitor — regenerated from web build; uncomment if you commit native projects)
+# ios/
+# android/
+*.ipa
+*.apk
+*.aab
+
+# logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# env
+.env
+.env*.local
+
+# macOS
+.DS_Store
+*.pem
+
+# agent / E2E test artifacts
+.playwright-mcp/
+
+# Claude Code local settings (per-machine; the shared allowlist is settings.local.json,
+# kept in the repo intentionally as a starter default)
+.claude/settings.json
