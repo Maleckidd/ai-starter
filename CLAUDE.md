@@ -50,8 +50,9 @@ data-access layer and pure utils); UI/native behavior is verified by running the
 
 Feature work uses four agents in `.claude/agents/` plus an **orchestrator** — the main
 Claude session, invoked via the `/feature <description>` command. The orchestrator is
-**read-only with respect to code**: it executes the plan step by step and, for each task,
-delegates work in the following order, looping on each gate:
+**read-only with respect to code**: per feature it runs **one cycle** — delegating the
+roles below and looping on each gate. The plan's steps are the coder's checklist *within*
+the cycle, not separate gate points:
 
 ```mermaid
 flowchart LR
@@ -73,17 +74,19 @@ flowchart LR
   **browser smoke** of the affected flow when the change is browser-observable; verdict
   APPROVED (`OK` → next task) / CHANGES REQUIRED (`incomplete` → back to coder).
 
-Drive it with `/feature <description>`, or run the same loop by hand in the main session.
-If a task has no testable pure logic, the orchestrator skips the tester for that task
-(the planner flags this).
+Drive it with `/feature <description>`, or run the same loop by hand. Use it for features
+with **real logic or risk** — for a small, low-risk change (copy tweak, style fix,
+one-liner), just make it directly and run the test + type-check commands; don't spin up the
+whole pipeline. If a feature has no significant pure logic, the tester is skipped (the
+planner flags this).
 
 ### Model routing (token policy)
 
-Models are chosen **per task, automatically**, to avoid paying Opus rates for cheap work.
-The planner (always on opus — its judgment compounds) tags each step with a complexity
-rating; the orchestrator spawns the tester and coder for that step on the routed model:
+Models are chosen **per feature, automatically**, to avoid paying Opus rates for cheap
+work. The planner (always on opus — its judgment compounds) gives the feature one
+complexity rating; the orchestrator runs the tester and coder on the routed model:
 
-| Tag   | Step is…                                                        | Model    |
+| Tag   | Feature is…                                                     | Model    |
 |-------|-----------------------------------------------------------------|----------|
 | `[S]` | trivial — pure mapping, a small local change, low risk          | `haiku`  |
 | `[M]` | medium — typical feature logic across a few files               | `sonnet` |
@@ -91,9 +94,9 @@ rating; the orchestrator spawns the tester and coder for that step on the routed
 
 - **planner** and **reviewer** always run on **opus** (plan quality and the final gate are
   where mistakes are most expensive).
-- **Escalation:** if a step's *Tests passing?* gate fails **twice**, the orchestrator
-  re-spawns the coder on `opus` regardless of the tag — firepower auto-bumps when a task
-  turns out harder than it looked.
+- **Escalation:** if the coder returns without green tests (stuck), the orchestrator
+  re-spawns it on `opus` — firepower auto-bumps when the feature turns out harder than it
+  looked. No per-step counting; just one escalation when the cycle stalls.
 - Each agent's frontmatter `model:` is only the **default** (used when run directly,
   without the orchestrator); the per-task override above takes precedence under `/feature`.
 

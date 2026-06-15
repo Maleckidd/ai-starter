@@ -44,5 +44,6 @@ the existing code style.
 The orchestrator invokes you **once, after the Planner**, to write the failing tests (TDD
 red), then hands off to the **coder**. Making red tests green is the coder's loop — you are
 **not** re-invoked on every failing run. You're called again **only** when a test turns out
-to encode the wrong expectation; fix that test and hand back to the coder. See
-`CLAUDE.md` → *Subagent pipeline & orchestration*.
+to encode the wrong expectation; fix that test and hand back to the coder. You are
+**skipped entirely** when the planner marks the feature's testable logic as "none
+significant". See `CLAUDE.md` → *Subagent pipeline & orchestration*.

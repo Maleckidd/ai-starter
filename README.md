@@ -29,10 +29,10 @@ TESTING.md              Layered verification + manual test plan template.
 
 Three ideas do the heavy lifting:
 
-1. **The orchestrated pipeline** — an orchestrator (the main session, via `/feature`)
-   executes the plan step by step and delegates: planner → tester → coder → reviewer, with
-   a gate loop (failing tests → coder; reviewer *incomplete* → coder). Small, ordered,
-   each with one job; plans and reviews are read-only.
+1. **The orchestrated pipeline** — an orchestrator (the main session, via `/feature`) runs
+   **one cycle per feature** and delegates: planner → tester → coder → reviewer, with a gate
+   loop (failing tests → coder; reviewer *incomplete* → coder). Small, ordered, each with
+   one job; plans and reviews are read-only.
 2. **The single data-access layer** — all data goes through one layer, declared in
    `CLAUDE.md`. This is what keeps the backend swappable (local-first ↔ hosted).
 3. **Spec-driven, with an explicit Out-of-scope** — `SPEC.md` §7 lists what the product
@@ -80,15 +80,16 @@ Scaffold the framework, the single data-access layer, the UI kit, and the test r
 to match `CLAUDE.md` → Stack. Verify `npm run dev` and the test command work, then commit.
 
 ### 4. Build features with the pipeline
-For each non-trivial feature, run `/feature <description>`. The **orchestrator** (the main
-session) executes a plan step by step and delegates to the agents with a gate loop:
+For a feature with **real logic or risk**, run `/feature <description>`. The **orchestrator**
+runs **one cycle for the whole feature** and delegates with a gate loop:
 
-> **planner** → **tester** → **coder** → *(Tests passing? no → coder)* → **reviewer** → *(incomplete → coder)* → next task
+> **planner** → **tester** → **coder** → *(Tests passing? no → coder)* → **reviewer** → *(incomplete → coder)* → done
 
-Plan first (read-only), write failing logic-only tests, implement until green, then gate
-with the reviewer (it runs the test + type-check commands and checks against the plan,
-the domain rules, and Out-of-scope). Verify UI/native behavior by running the app per
-`TESTING.md`. You can also drive the same loop by hand instead of `/feature`.
+Plan first (read-only), write failing logic-only tests (skipped when there's no real logic),
+implement until green, then gate **once** with the reviewer (test + type-check + browser
+smoke, checked against the plan, domain rules, and Out-of-scope). For small, low-risk
+changes, skip the pipeline — make the change directly and run the test + type-check
+commands. Native-only behavior is verified per `TESTING.md`.
 
 ## Conventions worth keeping
 
@@ -98,7 +99,7 @@ the domain rules, and Out-of-scope). Verify UI/native behavior by running the ap
 - **Don't scatter data access.** Everything goes through the one data layer.
 - **Update the spec.** `SPEC.md` is alive — change it on every significant decision.
 - **Respect Out-of-scope.** It's the cheapest way to keep an AI from over-building.
-- **Models are routed by task.** The planner tags each step `[S]`/`[M]`/`[L]`; the
-  orchestrator runs cheap work on haiku/sonnet and reserves opus for complex steps, the
-  plan, and the review gate — with auto-escalation when a task proves hard (`CLAUDE.md` →
+- **Models are routed by feature.** The planner rates each feature `[S]`/`[M]`/`[L]`; the
+  orchestrator runs cheap work on haiku/sonnet and reserves opus for complex features, the
+  plan, and the review gate — with auto-escalation when the coder gets stuck (`CLAUDE.md` →
   *Model routing*).

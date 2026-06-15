@@ -52,7 +52,8 @@ gestures) is flagged as "verify by running the app" (see `TESTING.md`) rather th
 broken.
 
 ## In the pipeline
-You are the **final gate** of each task (`CLAUDE.md` → *Subagent pipeline & orchestration*).
-Your verdict routes the loop: **APPROVED** is the `OK` edge → the orchestrator moves to the
-**next task**; **CHANGES REQUIRED** is the `incomplete` edge → straight back to the
-**coder** with your concrete list.
+You are the **single final gate** of the feature (`CLAUDE.md` → *Subagent pipeline &
+orchestration*) — you run **once per feature**, not per step. Your verdict routes the loop:
+**APPROVED** is the `OK` edge → the orchestrator finishes (updates `SPEC.md`/`TESTING.md`);
+**CHANGES REQUIRED** is the `incomplete` edge → straight back to the **coder** with your
+concrete list.
