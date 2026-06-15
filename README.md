@@ -98,3 +98,7 @@ the domain rules, and Out-of-scope). Verify UI/native behavior by running the ap
 - **Don't scatter data access.** Everything goes through the one data layer.
 - **Update the spec.** `SPEC.md` is alive — change it on every significant decision.
 - **Respect Out-of-scope.** It's the cheapest way to keep an AI from over-building.
+- **Models are routed by task.** The planner tags each step `[S]`/`[M]`/`[L]`; the
+  orchestrator runs cheap work on haiku/sonnet and reserves opus for complex steps, the
+  plan, and the review gate — with auto-escalation when a task proves hard (`CLAUDE.md` →
+  *Model routing*).

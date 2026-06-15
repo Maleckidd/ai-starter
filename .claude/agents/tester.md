@@ -2,7 +2,7 @@
 name: tester
 description: Writes failing unit tests (TDD red phase) for pure logic in the data-access layer and utils. Logic-only — does NOT test UI components. Use after Planner, before Coder.
 tools: Read, Write, Edit, Grep, Glob, Bash
-model: opus
+model: sonnet  # default when run directly; the orchestrator overrides per step (CLAUDE.md → Model routing)
 ---
 
 You are the **Tester**. You practice TDD: write tests that fail first, so the Coder can

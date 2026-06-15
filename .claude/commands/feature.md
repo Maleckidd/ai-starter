@@ -14,14 +14,19 @@ $ARGUMENTS
 ## Procedure
 1. Delegate to the **planner** (read-only). Get the plan: Goal, Affected files, Testable
    logic, ordered Steps, Risks. Surface blocking open questions before spending passes.
-2. Execute the plan step by step. **For each task, delegate work in the following order:**
-   1. **tester** — write failing logic-only tests for this task's pure logic. (Skip only
-      if the planner marked the task as having no testable logic.)
-   2. **coder** — implement until the tests are green.
+2. Execute the plan step by step. **For each task, delegate work in the following order.**
+   First read the step's complexity tag from the planner and pick the model per
+   `CLAUDE.md` → *Model routing* (`[S]`→haiku, `[M]`→sonnet, `[L]`→opus). Pass that as the
+   **model override** when you spawn the tester and the coder for this step. (The reviewer
+   always runs on opus; the planner already ran on opus.)
+   1. **tester** — write failing logic-only tests for this task's pure logic, on the step's
+      routed model. (Skip only if the planner marked the task as having no testable logic.)
+   2. **coder** — implement until the tests are green, on the step's routed model.
    3. **Gate — Tests passing?**
       - **no** → back to the **coder** — keep implementing until the tests are green (this
         is the coder's loop). Only bounce to the **tester** if a test itself encodes the
-        wrong expectation.
+        wrong expectation. **Escalation:** if this step's gate fails twice, re-spawn the
+        coder on **opus** regardless of the tag, then continue.
       - **yes** → continue to review.
    4. **reviewer** — read-only gate; runs the test + type-check commands, smokes the
       affected flow with the Playwright MCP when the change is browser-observable, and
