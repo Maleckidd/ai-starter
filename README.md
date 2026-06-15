@@ -1,4 +1,4 @@
-# ai-web-starter
+# ai-starter
 
 A **stack-agnostic starter for building apps with Claude Code.** It ships no application
 code — instead it ships a battle-tested *way of working with AI*: a four-agent feature
@@ -43,9 +43,9 @@ stack.
 
 ### 0. Clone without history
 ```bash
-npx degit <your-user>/ai-web-starter my-app    # or: "Use this template" on GitHub
+npx degit <your-user>/ai-starter my-app    # or: "Use this template" on GitHub
 cd my-app
-git init && git add -A && git commit -m "Start from ai-web-starter"
+git init && git add -A && git commit -m "Start from ai-starter"
 ```
 
 ### 1. Choose a stack
