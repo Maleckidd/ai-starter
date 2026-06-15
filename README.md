@@ -1,9 +1,9 @@
 # ai-starter
 
 A **stack-agnostic starter for building apps with Claude Code.** It ships no application
-code — instead it ships a battle-tested *way of working with AI*: a four-agent feature
-pipeline plus three living documents (spec, guidance, test plan). You pick the stack when
-you start a project; the AI layer stays the same.
+code — instead it ships a battle-tested *way of working with AI*: a four-agent pipeline
+driven by an orchestrator, plus three living documents (spec, guidance, test plan). You
+pick the stack when you start a project; the AI layer stays the same.
 
 > Extracted and generalized from a real React Native + Expo project. The value here is the
 > **methodology**, not a framework — which is exactly why it's reusable across very
@@ -16,10 +16,10 @@ you start a project; the AI layer stays the same.
   planner.md            → read-only: turns a request into a concrete plan
   tester.md             → TDD red: writes failing logic-only tests
   coder.md              → implements until tests are green
-  reviewer.md           → read-only gate: APPROVED / CHANGES REQUIRED
+  reviewer.md           → read-only gate: tests + type-check + browser smoke → verdict
 .claude/commands/
   feature.md            → /feature — the orchestrator: runs the pipeline with the gate loop
-.claude/settings.local.json   Minimal permission allowlist (npm / tsc / git / Playwright)
+.claude/settings.json   Shared permission allowlist (npm / tsc / git / Playwright)
 .mcp.json               Playwright MCP — for browser-driven smoke tests
 CLAUDE.md               Project guidance + the Stack/Commands the agents read. Has slots.
 SPEC.md                 Living spec (SDD). Numbered structure incl. Out-of-scope + Limits.

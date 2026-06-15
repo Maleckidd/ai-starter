@@ -2,7 +2,7 @@
 
 > Living spec-driven-development document. Consult it **before** implementing a feature;
 > update it **after** any significant design decision. This is the source of truth the
-> agents (planner, coder, reviewer) read.
+> agents (planner, tester, coder, reviewer) read.
 >
 > This is a template — replace the `<...>` placeholders. The numbered structure is
 > deliberate; keep it. Delete this quote block once the spec has real content.

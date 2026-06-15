@@ -34,7 +34,11 @@ $ARGUMENTS
       (Keep the dev server running so the reviewer can drive it.)
       - **incomplete** (CHANGES REQUIRED) → go back to the **coder** with the reviewer's
         specifics, then re-run the gate. Repeat.
-      - **OK** (APPROVED) → this task is done; move to the **next task**.
-3. When every task is APPROVED, stop and summarize what shipped, per file.
+      - **OK** (APPROVED) → this task is done. If it changed product behavior or settled a
+        design decision, update `SPEC.md` (mark the feature / record the decision) and add
+        any device/native-only cases to `TESTING.md`. Then move to the **next task**.
+3. When every task is APPROVED, stop and summarize what shipped, per file, and confirm that
+   `SPEC.md` and `TESTING.md` reflect the change.
 
-Keep each delegation tight. Don't write code in this thread — delegate it.
+Keep each delegation tight. Don't write **code** in this thread — delegate it. (Maintaining
+the `SPEC.md` / `TESTING.md` docs here is fine; those are not application code.)

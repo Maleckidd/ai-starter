@@ -29,6 +29,6 @@ yarn-error.*
 # agent / E2E test artifacts
 .playwright-mcp/
 
-# Claude Code local settings (per-machine; the shared allowlist is settings.local.json,
-# kept in the repo intentionally as a starter default)
-.claude/settings.json
+# Claude Code personal settings (per-machine). The shared allowlist lives in the
+# committed .claude/settings.json — that is intentionally a starter default.
+.claude/settings.local.json
