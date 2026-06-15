@@ -61,7 +61,7 @@ flowchart LR
     C --> Q{Tests passing?}
     Q -- no --> C
     Q -- yes --> R[reviewer]
-    R -- OK --> N[Next task]
+    R -- OK --> N[Next feature]
     R -- incomplete --> C
 ```
 
@@ -72,7 +72,7 @@ flowchart LR
   `incomplete` edge.
 - **reviewer** — read-only gate: runs the test + type-check commands, plus a Playwright-MCP
   **browser smoke** of the affected flow when the change is browser-observable; verdict
-  APPROVED (`OK` → next task) / CHANGES REQUIRED (`incomplete` → back to coder).
+  APPROVED (`OK` → next feature) / CHANGES REQUIRED (`incomplete` → back to coder).
 
 Drive it with `/feature <description>`, or run the same loop by hand. Use it for features
 with **real logic or risk** — for a small, low-risk change (copy tweak, style fix,
@@ -98,7 +98,7 @@ complexity rating; the orchestrator runs the tester and coder on the routed mode
   re-spawns it on `opus` — firepower auto-bumps when the feature turns out harder than it
   looked. No per-step counting; just one escalation when the cycle stalls.
 - Each agent's frontmatter `model:` is only the **default** (used when run directly,
-  without the orchestrator); the per-task override above takes precedence under `/feature`.
+  without the orchestrator); the per-feature override above takes precedence under `/feature`.
 
 This relies on the `Agent`/`Task` tool accepting a per-invocation `model` override. If a
 setup doesn't support that, fall back to per-tier agent variants (e.g. `coder-light` on
