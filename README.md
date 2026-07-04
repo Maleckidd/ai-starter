@@ -1,109 +1,131 @@
 # ai-starter
 
-A **stack-agnostic starter for building apps with Claude Code.** It ships no application
-code — instead it ships a battle-tested *way of working with AI*: a four-agent pipeline
-driven by an orchestrator, plus three living documents (spec, guidance, test plan). You
-pick the stack when you start a project; the AI layer stays the same.
+**Ship features with an AI pipeline that plans, tests, codes, and reviews — you bring the stack.**
 
-> Extracted and generalized from a real React Native + Expo project. The value here is the
-> **methodology**, not a framework — which is exactly why it's reusable across very
-> different projects.
+ai-starter is a stack-agnostic template for building apps with [Claude Code](https://claude.com/claude-code).
+It ships **zero application code**. What it ships instead is the thing that's actually hard
+to get right: a *disciplined way of working with AI* — a four-agent pipeline with quality
+gates, living docs that keep the AI on-spec, and guardrails that make it mechanically
+impossible to end a session with red tests.
 
-## What's inside
+> Extracted and generalized from a real production project. The value is the
+> **methodology**, not a framework — which is exactly why it works across wildly
+> different stacks.
 
+## Why this exists
+
+Anyone who's built with AI agents knows the failure modes:
+
+- 🌀 **Scope creep** — the AI "helpfully" builds features nobody asked for.
+- 🧪 **Self-graded homework** — the same agent writes the code *and* decides it's correct.
+- 💸 **Paying premium rates for trivial work** — every one-liner burns top-tier model tokens.
+- 🗿 **Stale knowledge** — the AI codes against a library API that changed two majors ago.
+
+ai-starter attacks each one structurally, not with wishful prompting:
+
+| Failure mode | Countermeasure |
+|---|---|
+| Scope creep | A living `SPEC.md` with an explicit **Out-of-scope** section the reviewer enforces |
+| Self-graded homework | **Separation of powers**: tests are written *before* the code, by a different agent; a read-only reviewer holds the final gate |
+| Token burn | **Automatic model routing** — the planner rates each feature `[S]`/`[M]`/`[L]` and cheap work runs on cheap models, with auto-escalation if the coder gets stuck |
+| Stale knowledge | **context7 MCP** pulls current library docs on demand; a **Stop hook** blocks any turn that ends with failing tests or broken types |
+
+## How it works
+
+One command — `/feature <description>` — runs **one cycle per feature**:
+
+```mermaid
+flowchart LR
+    P[🗺 planner] --> T[🔴 tester]
+    T --> C[⚙️ coder]
+    C --> Q{Tests green?}
+    Q -- no --> C
+    Q -- yes --> R[🔍 reviewer]
+    R -- OK --> N[✅ ship it]
+    R -- incomplete --> C
 ```
-.claude/agents/         The feature pipeline (read each for its exact contract):
-  planner.md            → read-only: turns a request into a concrete plan
-  tester.md             → TDD red: writes failing logic-only tests
-  coder.md              → implements until tests are green
-  reviewer.md           → read-only gate: tests + type-check + browser smoke → verdict
-.claude/commands/
-  feature.md            → /feature — the orchestrator: runs the pipeline with the gate loop
-.claude/hooks/
-  verify.sh             → Stop hook: type-check + tests gate when a turn ends (fill at bootstrap)
-.claude/settings.json   Shared permission allowlist + the Stop hook wiring
-.mcp.json               Playwright (browser smoke) + context7 (live library docs)
-CLAUDE.md               Project guidance + the Stack/Commands the agents read. Has slots.
-SPEC.md                 Living spec (SDD). Numbered structure incl. Out-of-scope + Limits.
-TESTING.md              Layered verification + manual test plan template.
-.gitignore
-```
 
-Three ideas do the heavy lifting:
+- **planner** *(read-only, always top-model)* — turns your request into a concrete plan and
+  rates its complexity, which picks the model for the rest of the cycle.
+- **tester** — writes failing logic-only tests first (real TDD red, not tests written to
+  match the implementation).
+- **coder** — implements until green. If it stalls, the orchestrator re-spawns it on a
+  stronger model automatically.
+- **reviewer** *(read-only, always top-model)* — runs tests + type-check, drives a real
+  **browser smoke test** via Playwright MCP, and checks the change against the plan, the
+  domain rules, and Out-of-scope. Verdict: APPROVED or back to the coder.
 
-1. **The orchestrated pipeline** — an orchestrator (the main session, via `/feature`) runs
-   **one cycle per feature** and delegates: planner → tester → coder → reviewer, with a gate
-   loop (failing tests → coder; reviewer *incomplete* → coder). Small, ordered, each with
-   one job; plans and reviews are read-only.
-2. **The single data-access layer** — all data goes through one layer, declared in
-   `CLAUDE.md`. This is what keeps the backend swappable (local-first ↔ hosted).
-3. **Spec-driven, with an explicit Out-of-scope** — `SPEC.md` §7 lists what the product
-   deliberately does *not* do, so the AI doesn't add features speculatively.
+Small, low-risk change? Skip the ceremony — edit directly; the Stop hook still gates the
+result.
 
-The agents are **stack-agnostic on purpose**: they defer every concrete detail (the test
-command, where the data layer lives, the UI conventions) to the project's own `CLAUDE.md`.
-Fill that in once, and the agents become as sharp as if they were hand-written for your
-stack.
+## Quick start
 
-## Bootstrap a new project
-
-### 0. Clone without history
 ```bash
 npx degit <your-user>/ai-starter my-app    # or: "Use this template" on GitHub
 cd my-app
 git init && git add -A && git commit -m "Start from ai-starter"
+claude
 ```
 
-### 1. Choose a stack
-Open Claude Code and talk through the idea first. Use the guide below to pick a stack
-deliberately — this decision shapes everything after it.
+Then, in conversation with Claude:
+
+1. **Pick a stack** (guide below) — this template doesn't care if it's Vite, Next, or Expo.
+2. **Fill the docs** — `CLAUDE.md` (stack, commands, architecture, domain rules),
+   `SPEC.md` (goal + first features + Out-of-scope), `TESTING.md` (verification layers).
+3. **Scaffold** the framework, the single data-access layer, and the test runner; fill the
+   two commands in `.claude/hooks/verify.sh`. Commit.
+4. **Build**: `/feature <description>` — and let the pipeline do its thing.
+
+Want to see it run before committing to it? [**FIRST-RUN.md**](FIRST-RUN.md) is a scripted
+15-minute end-to-end verification on a tiny real app.
+
+<details>
+<summary><b>Stack decision guide</b></summary>
 
 | If the app is… | Pick | Why |
 |---|---|---|
-| **Web-first, with iOS/Android as the *same* app in the stores** | **Vite + React + TS, Tailwind + shadcn/ui, Capacitor** | One web codebase; Capacitor wraps it natively. Best for tools / SaaS / CRUD where native "feel" isn't the headline. WebView ≠ native perf for heavy/gesture-driven UI. |
-| **Mobile-first, native apps are the product, web is a bonus** | **Expo / React Native (+ react-native-web)** | One RN codebase → iOS + Android natively, web for free. Native feel and APIs first-class. |
+| **Web-first, with iOS/Android as the *same* app in the stores** | **Vite + React + TS, Tailwind + shadcn/ui, Capacitor** | One web codebase; Capacitor wraps it natively. Best for tools / SaaS / CRUD where native "feel" isn't the headline. |
+| **Mobile-first, native apps are the product** | **Expo / React Native (+ react-native-web)** | One RN codebase → iOS + Android natively, web for free. |
 | **Web only, no app stores** | **Vite/Next + React + TS, Tailwind + shadcn/ui** | Skip the native wrapper entirely. |
 | **Backend / accounts / sync needed** | add **Supabase** (or similar) *behind the data layer* | Keep the single data-access layer; default to local-first and swap the implementation when a project actually needs sync. |
 
-Default lean for this starter's author: **web-first + Capacitor + Tailwind/shadcn +
-Vitest, local-first by default**. Adjust per idea.
+</details>
 
-### 2. Fill the docs (in conversation with Claude)
-- **`CLAUDE.md`** → fill the **Stack**, **Commands**, **Architecture**, and **Domain
-  rules** slots. This is what makes the agents concrete.
-- **`SPEC.md`** → write §1 goal, §2 stack, §5 the first feature(s), and — importantly —
-  §7 **Out of scope**.
-- **`TESTING.md`** → adapt the verification layers to the stack; you'll add cases as
-  features land.
+## What's inside
 
-### 3. Scaffold the chosen stack
-This starter ships no app code by design (it's already the first TODO in `SPEC.md` §8).
-Scaffold the framework, the single data-access layer, the UI kit, and the test runner
-to match `CLAUDE.md` → Stack. Then fill `.claude/hooks/verify.sh` with your type-check +
-test commands so the Stop hook can gate them. Verify `npm run dev` and the test command
-work, then commit.
+```
+.claude/agents/         The feature pipeline (each file is that agent's contract):
+  planner.md            → read-only: request → concrete plan + complexity rating
+  tester.md             → TDD red: failing logic-only tests
+  coder.md              → implements until green
+  reviewer.md           → read-only gate: tests + types + browser smoke → verdict
+.claude/commands/
+  feature.md            → /feature — the orchestrator with the gate loop
+.claude/hooks/
+  verify.sh             → Stop hook: type-check + tests when a turn ends
+.claude/settings.json   Shared permission allowlist + Stop hook wiring
+.mcp.json               Playwright (browser smoke) + context7 (live library docs)
+CLAUDE.md               Project guidance the agents read. Has slots to fill at bootstrap.
+SPEC.md                 Living spec — including Out-of-scope and Limits.
+TESTING.md              Layered verification + manual test plan template.
+FIRST-RUN.md            Scripted pipeline demo. Delete in real projects.
+```
 
-### 4. Build features with the pipeline
-For a feature with **real logic or risk**, run `/feature <description>`. The **orchestrator**
-runs **one cycle for the whole feature** and delegates with a gate loop:
+## The three load-bearing ideas
 
-> **planner** → **tester** → **coder** → *(Tests passing? no → coder)* → **reviewer** → *(incomplete → coder)* → done
-
-Plan first (read-only), write failing logic-only tests (skipped when there's no real logic),
-implement until green, then gate **once** with the reviewer (test + type-check + browser
-smoke, checked against the plan, domain rules, and Out-of-scope). For small, low-risk
-changes, skip the pipeline — make the change directly and run the test + type-check
-commands. Native-only behavior is verified per `TESTING.md`.
+1. **An orchestrated pipeline, not a monologue.** One cycle per feature; plans and reviews
+   are read-only; the gate loop sends incomplete work back instead of shipping it.
+2. **One data-access layer.** All reads/writes go through a single layer declared in
+   `CLAUDE.md` — which is what keeps the backend swappable (local-first today, hosted
+   tomorrow) without touching the UI.
+3. **A spec that says no.** `SPEC.md`'s Out-of-scope section is the cheapest known cure
+   for AI over-building — and the reviewer actually enforces it.
 
 ## Conventions worth keeping
 
-- **Logic-only unit tests.** Test pure logic (the data layer, utils). Don't write brittle
-  UI/component tests — UI is verified by **browser smoke** (the reviewer drives the affected
-  flow with the Playwright MCP), and native-only behavior by running the app per `TESTING.md`.
-- **Don't scatter data access.** Everything goes through the one data layer.
-- **Update the spec.** `SPEC.md` is alive — change it on every significant decision.
-- **Respect Out-of-scope.** It's the cheapest way to keep an AI from over-building.
-- **Models are routed by feature.** The planner rates each feature `[S]`/`[M]`/`[L]`; the
-  orchestrator runs cheap work on haiku/sonnet and reserves opus for complex features, the
-  plan, and the review gate — with auto-escalation when the coder gets stuck (`CLAUDE.md` →
-  *Model routing*).
+- **Logic-only unit tests.** Pure logic gets unit tests; UI is verified by the reviewer's
+  Playwright browser smoke, native behavior by running the app per `TESTING.md`. No
+  brittle component tests.
+- **Update the spec.** Every significant decision lands in `SPEC.md`.
+- **The agents stay stack-agnostic.** They defer every concrete detail to your
+  `CLAUDE.md` — fill it once and they behave as if hand-written for your stack.
