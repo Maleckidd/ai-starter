@@ -111,6 +111,10 @@ TESTING.md              Layered verification + manual test plan template.
 FIRST-RUN.md            Scripted pipeline demo. Delete in real projects.
 ```
 
+## Optional workflows
+
+The starter keeps project-specific tooling out of the default bootstrap. For Android/Google Play screenshots and promo-video source takes, see [`optional-workflows/android-play-assets`](optional-workflows/android-play-assets/README.md). It is a reusable ADB capture toolkit with a per-project automation adapter; it carries no application code or product-specific assumptions.
+
 ## The three load-bearing ideas
 
 1. **An orchestrated pipeline, not a monologue.** One cycle per feature; plans and reviews
