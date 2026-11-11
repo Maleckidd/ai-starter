@@ -1,0 +1,8 @@
+{
+  "project": { "id": "example-mobile-app", "name": "Example Mobile App", "androidPackage": "com.example.app" },
+  "locales": [
+    { "id": "en", "copy": { "title": "Plan with confidence", "subtitle": "A reusable store-assets workflow." } }
+  ],
+  "paths": { "captures": "artifacts/store-assets/captures", "takes": "artifacts/store-assets/takes", "output": "artifacts/store-assets/output" },
+  "device": { "serial": "emulator-5554", "width": 1080, "height": 2400, "navigation": "gesture" }
+}
