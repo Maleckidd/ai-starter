@@ -1,3 +1,17 @@
+/**
+ * Pulls `--name <value>` out of `args` and returns the value.
+ *
+ * Mutates `args`, so whatever is left can be handed to `parseSelectors`.
+ */
+export function takeOption(args, name) {
+  const index = args.indexOf(`--${name}`);
+  if (index === -1) return undefined;
+  const value = args[index + 1];
+  if (value === undefined || value.startsWith('--')) throw new Error(`--${name} requires a value`);
+  args.splice(index, 2);
+  return value;
+}
+
 export function parseSelectors(args, allowed) {
   const result = { selectors: [], locale: undefined };
   for (let i = 0; i < args.length; i++) {

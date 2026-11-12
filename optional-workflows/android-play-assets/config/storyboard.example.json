@@ -1,0 +1,45 @@
+{
+  "canvas": { "width": 1920, "height": 1080, "fps": 30 },
+  "captureSet": "phone",
+  "crossfadeMs": 500,
+  "scenes": [
+    {
+      "id": "title",
+      "card": "title",
+      "durationMs": 2600,
+      "copy": {
+        "en": { "headline": "Example App", "subline": "Collect ideas and plan your week" },
+        "pl": { "headline": "Example App", "subline": "Zbieraj pomysły i planuj tydzień" }
+      }
+    },
+    {
+      "id": "browse",
+      "take": "browse",
+      "inMs": 400,
+      "outMs": 5200,
+      "copy": {
+        "en": { "headline": "Find it\nin seconds", "subline": "Every item with a photo and a note" },
+        "pl": { "headline": "Znajdź to\nw kilka sekund", "subline": "Każda pozycja ze zdjęciem i notatką" }
+      }
+    },
+    {
+      "id": "plan",
+      "take": "plan",
+      "inMs": 400,
+      "outMs": 4800,
+      "copy": {
+        "en": { "headline": "Plan the week\nin one tap", "subline": "Add anything to your plan from where you are" },
+        "pl": { "headline": "Zaplanuj tydzień\njednym dotknięciem", "subline": "Dodawaj do planu z dowolnego miejsca" }
+      }
+    },
+    {
+      "id": "end",
+      "card": "end",
+      "durationMs": 3200,
+      "copy": {
+        "en": { "headline": "Example App", "subline": "Free. Offline. Yours.\nOn Google Play" },
+        "pl": { "headline": "Example App", "subline": "Za darmo. Offline. Twoje.\nW Google Play" }
+      }
+    }
+  ]
+}

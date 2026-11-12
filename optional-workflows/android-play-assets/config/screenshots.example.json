@@ -1,0 +1,31 @@
+{
+  "forms": {
+    "phone": { "width": 1080, "height": 1920, "captureSet": "phone", "frame": 0.806 },
+    "tablet7": { "width": 1200, "height": 1920, "captureSet": "tablet", "frame": 0.93 },
+    "tablet10": { "width": 1600, "height": 2560, "captureSet": "tablet", "frame": 0.93 }
+  },
+  "screens": [
+    {
+      "id": "01-home",
+      "copy": {
+        "en": { "headline": "Everything\nin one place", "subline": "Collections you can open at a glance" },
+        "pl": { "headline": "Wszystko\nw jednym miejscu", "subline": "Kolekcje, które otwierasz jednym spojrzeniem" }
+      }
+    },
+    {
+      "id": "02-list",
+      "copy": {
+        "en": { "headline": "Find it\nin seconds", "subline": "Every item with a photo and a note" },
+        "pl": { "headline": "Znajdź to\nw kilka sekund", "subline": "Każda pozycja ze zdjęciem i notatką" }
+      }
+    },
+    {
+      "id": "03-plan",
+      "align": "bottom",
+      "copy": {
+        "en": { "headline": "Plan the week\nin one tap", "subline": "Add anything to your plan from where you are" },
+        "pl": { "headline": "Zaplanuj tydzień\njednym dotknięciem", "subline": "Dodawaj do planu z dowolnego miejsca" }
+      }
+    }
+  ]
+}

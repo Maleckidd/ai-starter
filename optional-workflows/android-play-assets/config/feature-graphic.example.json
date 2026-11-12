@@ -1,0 +1,9 @@
+{
+  "screen": "02-list",
+  "captureSet": "phone",
+  "wordmarkAccent": "App",
+  "copy": {
+    "en": { "tagline": "Your ideas. Organised.", "points": ["No account", "Works offline", "No ads"] },
+    "pl": { "tagline": "Twoje pomysły. Uporządkowane.", "points": ["Bez konta", "Działa offline", "Bez reklam"] }
+  }
+}

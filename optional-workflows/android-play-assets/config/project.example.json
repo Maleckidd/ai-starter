@@ -1,8 +1,38 @@
 {
-  "project": { "id": "example-mobile-app", "name": "Example Mobile App", "androidPackage": "com.example.app" },
+  "project": {
+    "id": "example-app",
+    "name": "Example App",
+    "androidPackage": "com.example.app",
+    "activity": ".MainActivity"
+  },
   "locales": [
-    { "id": "en", "copy": { "title": "Plan with confidence", "subtitle": "A reusable store-assets workflow." } }
+    { "id": "en", "copy": { "title": "Example App", "shortDescription": "Collect ideas and plan your week." } },
+    { "id": "pl", "copy": { "title": "Example App", "shortDescription": "Zbieraj pomysły i planuj tydzień." } }
   ],
-  "paths": { "captures": "artifacts/store-assets/captures", "takes": "artifacts/store-assets/takes", "output": "artifacts/store-assets/output" },
-  "device": { "serial": "emulator-5554", "width": 1080, "height": 2400, "navigation": "gesture" }
+  "paths": {
+    "captures": "artifacts/store-assets/captures",
+    "takes": "artifacts/store-assets/takes",
+    "output": "artifacts/store-assets/output",
+    "logo": "artifacts/store-assets/logo.png",
+    "music": "music/track.mp3"
+  },
+  "device": { "serial": "emulator-5554" },
+  "captureSets": {
+    "phone": { "width": 1080, "height": 2400, "statusBarRows": 66, "bottomBarRows": 60 },
+    "tablet": { "width": 1600, "height": 2560, "statusBarRows": 64, "bottomBarRows": 130 }
+  },
+  "brand": {
+    "primary": "#2F6FED",
+    "accent": "#12B5A6",
+    "ink": "#14171F",
+    "body": "#3D4350",
+    "muted": "#5F6675",
+    "surface": "#FFFFFF",
+    "background": ["#FBFCFF", "#F1F4FB", "#E6EBF7"]
+  },
+  "specs": {
+    "screenshots": "config/screenshots.example.json",
+    "featureGraphic": "config/feature-graphic.example.json",
+    "storyboard": "config/storyboard.example.json"
+  }
 }
