@@ -46,8 +46,10 @@ Steps:
    `npm run build`), **Architecture** (the single logic layer is `src/utils/`; UI in `src/`),
    and one **Domain rule**: *per-person shares must sum exactly to the total — distribute the
    remainder cent-by-cent.*
-3. Fill `SPEC.md` §1 goal, §2 stack, §5.1 the split feature, §7 Out-of-scope (no accounts,
-   one currency only, no tax/tip in v1).
+3. Fill `SPEC.md` §1 goal, §2 stack — including *Accounts, monetization & distribution*
+   (all three answers are "no": a throwaway calculator stores nothing, so local-only is the
+   deliberate choice here) — §5.1 the split feature, §7 Out-of-scope (no accounts, one
+   currency only, no tax/tip in v1).
 4. Fill `.claude/hooks/verify.sh`: `TYPECHECK="npx tsc --noEmit"` and `TEST="npm test"`
    (this also tests the Stop-hook guardrail).
 5. Verify `npm run dev` serves and `npm test` runs (fine with zero tests). Commit.

@@ -17,13 +17,21 @@ exactly one layer — push every check as far down (cheaper, more automated) as 
 |---|---|---|
 | Unit tests | `<test command>` | Pure logic: the data-access layer, utils (parsing, validation, formatting, search) |
 | Type check | `<typecheck command>` | Strict TypeScript across the codebase |
-| Browser smoke | Playwright MCP on the dev server | Browser-driven flows: form → save → list, navigation, rendering |
+| Browser smoke | Playwright MCP on the dev server | The flow a feature just added or changed — once, at the feature gate |
+| E2E regression | `<e2e command, or "not set up yet">` on `<target: web build / emulator>` | *Optional.* The P0 flows, re-run before a release, so an old flow can't break silently — see [docs/e2e.md](docs/e2e.md) |
 | **Manual (this plan)** | `<device / native build>` | Native modules, OS dialogs, gestures, permissions, file system, share sheet, app lifecycle |
 
 **The browser-smoke layer runs inside the pipeline:** the **reviewer** drives the affected
 flow with the Playwright MCP as part of the feature gate (see `.claude/agents/reviewer.md`
-check 7). This document's **manual** layer therefore covers only what the browser cannot
-reach.
+check 7). A smoke proves the flow works on the day it ships and leaves nothing behind. The
+optional **E2E** layer is what keeps it working: it is not part of the pipeline — you add it
+and run it yourself — but once it exists, every P0 case in §5 that a browser or emulator can
+reach should have an E2E test, and this document's **manual** layer covers only what neither
+can reach.
+
+**E2E state strategy:** `<how each test gets a known state — e.g. the web build runs on an
+in-memory database that resets per page load; on the emulator data persists, so tests
+create uniquely named records>`.
 
 **Why a manual layer exists:** `<list the gaps the automated layers can't reach for this
 stack — e.g. native APIs have no web implementation, OS permission dialogs, real device
@@ -43,7 +51,8 @@ persistence>`. Every case below exercises at least one of those gaps.
 | E2 | `<secondary>` | `<...>` | P1 | `<...>` |
 
 ### Preconditions for every session
-1. `<test command>` green and `<typecheck command>` clean on the commit under test.
+1. `<test command>` green, `<typecheck command>` clean and — once the layer exists —
+   `<e2e command>` green on the commit under test.
 2. App installed fresh **or** state reset (each case states which).
 3. `<any locale/config preconditions>`.
 
@@ -58,6 +67,9 @@ persistence>`. Every case below exercises at least one of those gaps.
 - **Result recording:** Pass / Fail / Blocked + target from the matrix. A Fail needs:
   repro steps, expected vs. actual, screenshot/recording, platform + OS.
 - Each case lists the `SPEC.md` section it traces to.
+- **Automate downwards.** When a case here can be driven by a browser or an emulator, turn
+  it into an E2E test and mark the case `(E2E: <test file>)` — a human then runs it only
+  for the release pass. A bug that was found by hand and fixed gets the same treatment.
 
 ## 4. Test cases
 
@@ -80,6 +92,7 @@ The P0 set, in execution order:
 
 ## 6. Exit criteria
 
-- 100% of P0 passed on the primary platform.
+- 100% of P0 passed on the primary platform (the E2E suite green counts for the cases it
+  automates).
 - No open defects in `<data-loss / critical class>`.
 - P1 failures triaged: fixed, or explicitly accepted and recorded in `SPEC.md` §9.

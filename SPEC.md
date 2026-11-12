@@ -26,6 +26,26 @@ not a product surface.>`
 `<List the concrete stack — mirror CLAUDE.md → Stack, with versions where they matter and
 a one-line reason for each non-obvious choice.>`
 
+### Accounts, monetization & distribution
+
+> Answer these **before** choosing the data layer. They are the three decisions that are
+> cheap on day one and a rewrite later: an app that shipped without accounts has its users'
+> data on their devices only, and nothing to attach a purchase, a second device or a web
+> login to. "Not now" is a fine answer — "never thought about it" is not.
+
+| Question | Answer | Consequence |
+|---|---|---|
+| Will anyone ever pay (subscription, one-time unlock, paid tier)? | `<yes / maybe / no>` | `<e.g. yes → account required; entitlement stored per account; store billing + web checkout>` |
+| Will one person use it on more than one device, or on web **and** phone? | `<yes / maybe / no>` | `<e.g. maybe → hosted DB behind the data layer from the start; guest session until sign-up>` |
+| Is the web a real product surface (the link you share), or only the stores? | `<web / stores / both>` | `<e.g. both → web build is a product, not a test target; no device-only storage>` |
+
+**Decision:** `<Accounts from day one (default when any answer is "yes" or "maybe"). OR:
+no accounts, local-only — all three are "no", because <reason>; listed in §7.>`
+
+**If local-only:** what it would take to change this later — `<e.g. ids are already UUIDs
+and rows carry updated_at, so a later sync is a data-layer change plus a one-time upload
+from each device; a paid tier would need accounts first>`.
+
 ## 3. Project architecture
 
 ### Directory structure
@@ -41,7 +61,8 @@ there is/isn't a global store.>`
 
 ### Entities / tables
 `<Each entity: fields, types, required vs optional, relations. Note how dates/ids are
-stored.>`
+stored — ids as client-generated UUIDs, with created_at / updated_at on every record, unless
+§2 gives a reason not to.>`
 
 ### Key behaviors
 `<Invariants: sort order, cascade/null-on-delete rules, what touches "updated_at", etc.>`
@@ -71,7 +92,7 @@ interaction patterns. Never hardcode style values when a token exists.>`
 > does **not** do, so features aren't added speculatively. The agents treat this as a
 > hard boundary.
 
-- `<e.g. No cloud sync / accounts.>`
+- `<e.g. No cloud sync / accounts — a deliberate §2 decision, with its reason, not a default.>`
 - `<e.g. No <feature> — deferred / rejected because <reason>.>`
 
 ## 8. TODO — open items

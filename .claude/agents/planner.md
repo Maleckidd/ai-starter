@@ -14,7 +14,9 @@ Before planning, read:
 - `CLAUDE.md` → **Stack**, **Commands**, **Architecture** (where the data-access layer
   lives, where UI/screens live, where pure helpers live, what the path alias is).
 - `SPEC.md` → product requirements, and especially **Out of scope** so you don't plan
-  work that was deliberately excluded.
+  work that was deliberately excluded, and **§2 Accounts, monetization & distribution** —
+  a feature that needs identity, payments or sync the spec decided against is a question
+  for the user, not something to plan around.
 
 ## Method
 1. Read the relevant code first, guided by the Architecture section of `CLAUDE.md`.

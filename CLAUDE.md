@@ -23,10 +23,17 @@ this sentence.>`
 
 - **Framework:** `<e.g. Vite + React 18 + TypeScript (strict)>`
 - **UI / styling:** `<e.g. Tailwind CSS + shadcn/ui>`
-- **Data layer:** `<e.g. local-first SQLite via @capacitor-community/sqlite (device) /
-  sql.js (web); single access layer in data/. OR: Supabase. See Architecture.>`
+- **Accounts & identity:** `<e.g. hosted auth (Supabase Auth), guest session upgraded to an
+  account on first sync. OR: none — deliberate, see SPEC.md §2 for the reason.>`
+- **Monetization & distribution:** `<e.g. free; web link + both stores. OR: subscription via
+  store billing + web checkout, entitlement stored per account. See SPEC.md §2.>`
+- **Data layer:** `<e.g. Supabase (Postgres + row-level security) behind data/. OR:
+  local-first SQLite via @capacitor-community/sqlite (device) / sql.js (web); single access
+  layer in data/. See Architecture.>`
 - **Native packaging (if any):** `<e.g. Capacitor → iOS + Android. Or: none / web-only.>`
 - **Tests:** `<e.g. Vitest — logic-only>`
+- **E2E:** `<e.g. Playwright Test on the web build, fresh state per test. Or: not set up yet
+  — see docs/e2e.md.>`
 - **Path alias:** `<e.g. @/* → src/*>`
 
 ## Commands
@@ -38,13 +45,17 @@ this sentence.>`
 <dev>            # e.g. npm run dev            — dev server
 <test>           # e.g. npm test               — unit tests (logic-only)
 <typecheck>      # e.g. npx tsc --noEmit        — strict type check
+<e2e>            # e.g. npx playwright test    — E2E regression suite, if set up (docs/e2e.md)
 <build>          # e.g. npm run build
 <native-sync>    # e.g. npx cap sync           — if using Capacitor
 ```
 
 There is no lint script unless added. Unit tests cover **pure logic only** (the
 data-access layer and pure utils); UI/native behavior is verified by running the app
-(see [TESTING.md](TESTING.md)), not by component tests.
+(see [TESTING.md](TESTING.md)), not by component tests. The flows that must never break
+can get a small **E2E regression suite** ([docs/e2e.md](docs/e2e.md)). It is an optional
+layer you run yourself — before a release, or after a change to a flow it covers. It is not
+part of the `/feature` pipeline or the Stop hook.
 
 ## Subagent pipeline & orchestration
 
@@ -127,6 +138,12 @@ Don't scatter raw queries/storage calls across the UI. This is what makes the ba
 swappable (e.g. local-first ↔ a hosted backend) — the rest of the app depends on the
 layer's functions, not on where the data physically lives.
 
+The layer makes *storage* swappable; it does not make **identity** retrofittable. Whether
+the app has accounts is decided in `SPEC.md` §2 before the first feature. Whatever the
+answer, keep the data model ready for the other one: ids are client-generated UUIDs (never
+autoincrement integers), every record carries `created_at` / `updated_at`, the layer's
+functions are async, and nothing outside the layer assumes the data is on this device.
+
 **Layers (fill at bootstrap):**
 - `<src/ — app code: routes/pages, components>`
 - `<data/ — the only data-access layer>`
@@ -148,5 +165,7 @@ the migration>`.
 - `<e.g. The only required form field is the title; numeric fields save an int ≥ 1 or
   null — never NaN.>`
 - `<e.g. Search must handle non-ASCII input — filter in JS, not SQL LIKE.>`
+- Record ids are client-generated UUIDs; every record has `created_at` / `updated_at`
+  (keeps sync and accounts possible later — see Architecture).
 - Out-of-scope features are listed in `SPEC.md` → **Out of scope** — don't add them
   speculatively.

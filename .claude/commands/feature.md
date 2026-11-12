@@ -18,7 +18,8 @@ $ARGUMENTS
 ## Procedure — one cycle for the whole feature
 1. **planner** (opus) — get the plan: Goal, a single **complexity rating** `[S]`/`[M]`/`[L]`
    for the feature, Affected files, Testable logic (or "none significant"), ordered Steps,
-   Risks. Resolve blocking open questions before spending passes.
+   Risks. Resolve blocking open questions before spending passes — a feature that needs
+   accounts, payments or sync the spec decided against (`SPEC.md` §2) is one.
 2. Pick the coder/tester model from the feature's rating per `CLAUDE.md` → *Model routing*
    (`[S]`→haiku, `[M]`→sonnet, `[L]`→opus); pass it as the model override when you spawn
    them. (Planner and reviewer always run on opus.)
